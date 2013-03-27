@@ -1,0 +1,17 @@
+/* TEAM */                 
+Your title: Your Name
+Site: http://www.yourwebsite.com
+Twitter:@yourtwitterusername
+Location: Somewhere, Some State, United States of America
+						
+/* THANKS */						
+Name: To everyone that makes the web a beautiful place.
+                            
+/* SITE */                       
+Last update: 2013-04-01
+                         
+Standards: HTML5, CSS3
+                        
+Components: Modernizr, jQuery, Lots of jQuery Components
+                       
+Software: Sublime Text, GitHub
