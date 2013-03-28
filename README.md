@@ -44,6 +44,9 @@ MicroSite is meant to be a quick starting point for building static websites fro
   <li><strong>/assets/js/common</strong> - this is where all JavaScript files should go that get loaded on all pages of your website</li>
   <li><strong>/assets/js</strong> - this is where you'll put page specific JavaScript.  For example if you have a page called about.php and you have JavaScript that is only specific to the about page, create a file called about.js in this folder with only that specific JavaScript.</li>
   <li><strong>/assets/img</strong> - this is where you'll put all of your image files</li>
+</ul>
 
+<h4>Sitemap Generator</h4>
 
+There isn't anything you need to do to get the sitemap generator working.  It should work out of the box.  The sitemap.php file is what you'll give to Google Webmaster Tools and any other places you submit your sitemaps.  It will exclude all files you specify in your robots.txt file from the generated sitemap.
 
