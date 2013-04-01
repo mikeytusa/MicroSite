@@ -48,7 +48,7 @@ MicroSite is meant to be a quick starting point for building static websites fro
 
 <h4>Sitemap Generator</h4>
 
-There isn't anything you need to do to get the sitemap generator working.  It should work out of the box.  The sitemap.php file is what you'll give to Google Webmaster Tools and any other places you submit your sitemaps.  It will exclude all files you specify in your robots.txt file from the generated sitemap.
+There isn't anything you need to do to get the sitemap generator working.  It should work out of the box.  The sitemap.php file is what you'll give to Google Webmaster Tools and any other places you submit your sitemaps.  It will exclude all files you specify in your robots.txt file from the generated sitemap so make sure to keep your robots.txt file updated with any files or folders you do not want to be indexed.
 
 <h4>Thanks!</h4>
 
