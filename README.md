@@ -27,7 +27,7 @@ MicroSite is meant to be a quick starting point for building static websites fro
 <ul>
   <li><strong>index.php</strong> - this file is responsible for including your header and footer on each or serving up a 404 page if no page is found</li>
   <li><strong>pages/</strong> - this folder contains all of your pages. You can create folders to stay organized.
-    <uL>
+    <ul>
       <li><strong>_header.php</strong> - this will be your websites header file</li>
       <li><strong>_footer.php</strong> - this is your websites footer file</li>
       <li><strong>_404.php</strong> - this is your websites 404 page</li>
