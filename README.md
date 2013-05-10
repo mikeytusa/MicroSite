@@ -20,7 +20,7 @@ MicroSite is a very small framework for building static websites.  It does not d
   <li>Apache Web Server</li>
 </ul>
 
-MicroSite is meant to be a quick starting point for building static websites from scratch.  You can use whatever frontend frameworks you want. Just add in their required dependancies as well as any Javascript frameworks you'd like to work with.
+MicroSite is meant to be a quick starting point for building static websites from scratch.  You can use whatever frontend frameworks you want. Just add in their required dependancies as well as any JavaScript frameworks you'd like to work with.
 
 <h4>Required Files:</h4>
 
@@ -73,4 +73,4 @@ There isn't anything you need to do to get the sitemap generator working.  It sh
 
 <h4>Thanks!</h4>
 
-Special thanks to Sean Ferguson from Signal24 for helping out with the concept and <strike>some</strike> all of the PHP.
+Special thanks to Sean Ferguson from Signal24 for helping out with the concept and writing the PHP.
