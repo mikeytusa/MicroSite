@@ -1,0 +1,57 @@
+# This is a comment. Lines beginning with # are ignored.
+
+# Specify a page name, followed by a colon, and then one include per line following.
+# Use a blank line to separate pages. Whitespace is stripped, so feel free to use
+# tabs or spaces to improve readability. You can specify a page name more than once
+# and the includes will just be joined together.
+
+
+# Single include for a single page
+home:
+	chat-helper.js
+
+
+# You can also list multiple pages, separated by commas
+get-a-quote,
+contact-us:
+	form-helper.js
+
+
+# Subfolders work just fine, too
+services/web-design:
+	hover-animations.js
+
+
+# By default, JS files will be loaded from /assets/js
+# and CSS from /assets/css, but if you prefix your
+# path with a slash, MicroSite will look from the root
+# of your site
+get-a-quote:
+	/assets/libs/jqueryui/jqueryui.css
+	/assets/libs/jqueryui/jqueryui.js
+
+
+# Who wants to repeat the same lines over and over?
+# Instead, you can make up a group, and then include it
+# in any (even many) page definitions, by using @made_up_group_name
+# Just be sure the group name doesn't conflict with a page name,
+# or assets might be loaded unpredictably.
+get-a-quote:
+	@jqueryui
+
+jqueryui:
+	/assets/libs/jqueryui/jqueryui.css
+	/assets/libs/jqueryui/jqueryui.js
+
+
+# By default, CSS files are loaded in the header, and JavaScript
+# files in the footer. You can change this behavior by using < and >
+# before specifying the filename
+some-unusual-page-that-requires-js-in-the-header:
+	< some-js-file-that-will-load-in-the-header.js
+	some-js-file-that-will-load-in-the-footer.js
+	some-css-file-that-will-load-in-the-header.css
+	> some-css-file-that-will-load-in-the-footer.css
+
+
+# The end!
