@@ -1,61 +1,69 @@
 <?php
 
 // get the requested page, disallowing pages that begin with _
-$_page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', $_SERVER['REQUEST_URI']);
+$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', $SERVER['REQUEST_URI']);
 
 // no request? home page it is
-if (!$_page)
-  $_page = 'home';
+if (!$page)
+  $page = 'home';
 
 // page doesn't exist? uh oh. 404!
-if (!file_exists('pages/' . $_page . '.php'))
-  $_page = '_404';
+if (!file_exists('pages/' . $page . '.php'))
+  $page = '_404';
 
 // what includes should we have for this page?
 determine_page_includes();
 
-// start output buffering
-ob_start();
+// output page
+output_page();
 
-// include the content page
-include('pages/' . $_page . '.php');
+// output page
+function output_page() {
+	global $page;
 
-// get the buffer into a variable
-// now we've got the content, and
-// any variables in the content file
-// have been loaded
-$_content = ob_get_clean();
+	// start output buffering
+	ob_start();
 
-// so, include the header, output the content,
-// and then output the footer
-include('pages/_header.php');
-echo $_content;
-include('pages/_footer.php');
+	// include the content page
+	include('pages/' . $page . '.php');
+
+	// get the buffer into a variable
+	// now we've got the content, and
+	// any variables in the content file
+	// have been loaded
+	$_content = ob_get_clean();
+
+	// so, include the header, output the content,
+	// and then output the footer
+	include('pages/_header.php');
+	echo $_content;
+	include('pages/_footer.php');
+}
 
 // output any includes for the header
 function output_header_includes() {
-	global $_includes;
-	foreach ($_includes['head']['css'] as $file)
+	global $includes;
+	foreach ($includes['head']['css'] as $file)
 		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : 'assets/css/') . $file . '">';
-	foreach ($_includes['head']['js'] as $file)
+	foreach ($includes['head']['js'] as $file)
 		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : 'assets/js/') . $file . '"></script>';	
 }
 
 // output any includes for the footer
 function output_footer_includes() {
-	global $_includes;
-	foreach ($_includes['foot']['css'] as $file)
+	global $includes;
+	foreach ($includes['foot']['css'] as $file)
 		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : 'assets/css/') . $file . '">';
-	foreach ($_includes['foot']['js'] as $file)
+	foreach ($includes['foot']['js'] as $file)
 		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : 'assets/js/') . $file . '"></script>';	
 }
 
 // figure out what the includes should be
 function determine_page_includes() {
-	global $_includes, $_page, $_def;
+	global $includes, $page, $def;
 
 	// prepare an empty array for all the includes possibilities
-	$_includes = array(
+	$includes = array(
 		'head' => array(
 			'css' => array(),
 			'js' => array()
@@ -69,7 +77,7 @@ function determine_page_includes() {
 	// if we have an includes definition file
 	if (file_exists('includes.txt')) {
 		// array to keep track of definitions
-		$_def = array();
+		$def = array();
 
 		// some stuff to help us parse
 		$nextLineIsBlockDef = true;
@@ -110,10 +118,10 @@ function determine_page_includes() {
 				// if the next line is not part a block definition
 				if (!$nextLineIsBlockDef) {
 					// set the definition index for the next block
-					$blockIndex = count($_def);
+					$blockIndex = count($def);
 
 					// add this block definition
-					$_def[$blockIndex] = array(
+					$def[$blockIndex] = array(
 						'appliesTo' => $blockAppliesTo,
 						'includes' => array()
 					);
@@ -124,44 +132,44 @@ function determine_page_includes() {
 			}
 
 			// add this line to the block
-			$_def[$blockIndex]['includes'][] = $line;
+			$def[$blockIndex]['includes'][] = $line;
 		}
 
 		// add includes for this page
-		add_includes_for($_page);
+		add_includes_for($page);
 	}
 
 	// how about page-specific CSS files?
-	if (file_exists('assets/css/' . ($file = $_page . '.css')))
-		$_includes['head']['css'][] = $file;
-	if (file_exists('assets/css/' . ($file = $_page . '-head.css')))
-		$_includes['head']['css'][] = $file;
-	if (file_exists('assets/css/' . ($file = $_page . '-foot.css')))
-		$_includes['foot']['css'][] = $file;
+	if (file_exists('assets/css/' . ($file = $page . '.css')))
+		$includes['head']['css'][] = $file;
+	if (file_exists('assets/css/' . ($file = $page . '-head.css')))
+		$includes['head']['css'][] = $file;
+	if (file_exists('assets/css/' . ($file = $page . '-foot.css')))
+		$includes['foot']['css'][] = $file;
 
 	// JS files?
-	if (file_exists('assets/js/' . ($file = $_page . '.js')))
-		$_includes['foot']['js'][] = $file;
-	if (file_exists('assets/js/' . ($file = $_page . '-foot.js')))
-		$_includes['foot']['js'][] = $file;
-	if (file_exists('assets/js/' . ($file = $_page . '-head.js')))
-		$_includes['head']['js'][] = $file;
+	if (file_exists('assets/js/' . ($file = $page . '.js')))
+		$includes['foot']['js'][] = $file;
+	if (file_exists('assets/js/' . ($file = $page . '-foot.js')))
+		$includes['foot']['js'][] = $file;
+	if (file_exists('assets/js/' . ($file = $page . '-head.js')))
+		$includes['head']['js'][] = $file;
 
 	// a folder full of CSS?
-	if (file_exists($dir = 'assets/css/' . $_page) && is_dir($dir))
+	if (file_exists($dir = 'assets/css/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
 			if (substr($file, -4) == '.css')
-				$_includes[preg_match('/-foot\./', $file) ? 'foot' : 'head']['css'][] = $_page . '/' . $file;
+				$includes[preg_match('/-foot\./', $file) ? 'foot' : 'head']['css'][] = $page . '/' . $file;
 
 	// a folder full of JS?
-	if (file_exists($dir = 'assets/js/' . $_page) && is_dir($dir))
+	if (file_exists($dir = 'assets/js/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
 			if (substr($file, -3) == '.js')
-				$_includes[preg_match('/-head\./', $file) ? 'head' : 'foot']['js'][] = $_page . '/' . $file;
+				$includes[preg_match('/-head\./', $file) ? 'head' : 'foot']['js'][] = $page . '/' . $file;
 }
 
 function add_includes_for($key) {
-	global $_includes, $_def;
+	global $includes, $def;
 	static $includedIndexes;
 
 	// set up included indexes array if it hasn't been set up yet
@@ -169,7 +177,7 @@ function add_includes_for($key) {
 		$includedIndexes = array();
 
 	// loop through each definition
-	foreach ($_def as $index => &$block) {
+	foreach ($def as $index => &$block) {
 		// if we've already included this index, don't do it again
 		if (in_array($index, $includedIndexes))
 			continue;
@@ -207,11 +215,11 @@ function add_includes_for($key) {
 
 			// CSS?
 			if (substr($include, -4) == '.css')
-				$_includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = $include;
+				$includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = $include;
 
 			// JS?
 			elseif (substr($include, -3) == '.js')
-				$_includes[$placement == 'head' ? 'head' : 'foot']['js'][] = $include;
+				$includes[$placement == 'head' ? 'head' : 'foot']['js'][] = $include;
 		}
 	}
 }
