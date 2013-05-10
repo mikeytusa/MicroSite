@@ -15,8 +15,8 @@ function crawl_dir($dir = '/') {
 	global $exclusions;
 	$dh = opendir('../pages' . $dir);
 	while ($file = readdir($dh)) {
-		if (preg_match('/\.php$/', $file)) {
-			$loc = $dir . preg_replace('/\.php$/', '', $file);
+		if (preg_match('/^[^_]+\.php$/', $file)) {
+			$loc = $dir . substr($file, 0, -4);
 			if (in_array($loc, $exclusions))
 				continue;
 ?>
