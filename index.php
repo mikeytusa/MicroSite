@@ -1,7 +1,7 @@
 <?php
 
 // get the requested page, disallowing pages that begin with _
-$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', $SERVER['REQUEST_URI']);
+$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', $_SERVER['REQUEST_URI']);
 
 // no request? home page it is
 if (!$page)
@@ -44,18 +44,18 @@ function output_page() {
 function output_header_includes() {
 	global $includes;
 	foreach ($includes['head']['css'] as $file)
-		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : 'assets/css/') . $file . '">';
+		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
 	foreach ($includes['head']['js'] as $file)
-		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : 'assets/js/') . $file . '"></script>';	
+		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';	
 }
 
 // output any includes for the footer
 function output_footer_includes() {
 	global $includes;
 	foreach ($includes['foot']['css'] as $file)
-		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : 'assets/css/') . $file . '">';
+		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
 	foreach ($includes['foot']['js'] as $file)
-		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : 'assets/js/') . $file . '"></script>';	
+		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';	
 }
 
 // figure out what the includes should be
