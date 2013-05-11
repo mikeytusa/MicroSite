@@ -41,21 +41,25 @@ function output_page() {
 }
 
 // output any includes for the header
-function output_header_includes() {
+function output_header_includes($indent = '') {
 	global $includes;
+	$append = array();
 	foreach ($includes['head']['css'] as $file)
-		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
+		$append[] = '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
 	foreach ($includes['head']['js'] as $file)
-		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';	
+		$append[] = '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';
+	echo implode("\n" . $indent, $append);
 }
 
 // output any includes for the footer
-function output_footer_includes() {
+function output_footer_includes($indent = '') {
 	global $includes;
+	$append = array();
 	foreach ($includes['foot']['css'] as $file)
-		echo '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
+		$append[] = '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
 	foreach ($includes['foot']['js'] as $file)
-		echo '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';	
+		$append[] = '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';
+	echo implode("\n" . $indent, $append);
 }
 
 // figure out what the includes should be
