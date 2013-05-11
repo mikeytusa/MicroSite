@@ -7,6 +7,7 @@
 <!-- This is where you'll add the rest of your JavaScript libraries --> 
 
 <!-- Footer includes for this page -->
+<!-- The footer also supports indenting like the header, but here we're not indented, so we don't specify anything -->
 <?php output_footer_includes(); ?>
 
 </body>
