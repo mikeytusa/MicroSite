@@ -16,7 +16,8 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/assets/img/apple/apple-touch-icon-144x144.png">
     
     <!-- Header includes for this page -->
-    <?php output_header_includes(); ?>
+    <!-- The text in the parethentheses is the indent should precede each line, for prettier source -->
+    <?php output_header_includes('    '); ?>
 </head>
  
 <body>
