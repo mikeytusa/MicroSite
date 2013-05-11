@@ -135,7 +135,17 @@ function determine_page_includes() {
 			$def[$blockIndex]['includes'][] = $line;
 		}
 
-		// add includes for this page
+		// if this page is in a subfolder
+		if (strpos($page, '/')) {
+			// break this page into folders
+			$folders = explode('/', dirname($page));
+
+			// add includes for each folder
+			for ($index = 0, $count = count($folders); $index < $count; $index++)
+				add_includes_for(implode('/', array_slice($folders, 0, $index + 1)) . '/');
+		}
+
+		// add includes for the page
 		add_includes_for($page);
 	}
 

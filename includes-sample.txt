@@ -17,9 +17,14 @@ contact-us:
 	form-helper.js
 
 
-# Subfolders work just fine, too
+# Pages inside folders work just fine too:
 services/web-design:
 	hover-animations.js
+
+
+# Or, include every page in a folder (and its subfolders) by ending with a slash:
+take-a-tour/:
+	tour.css
 
 
 # By default, JS files will be loaded from /assets/js
