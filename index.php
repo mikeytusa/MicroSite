@@ -34,7 +34,7 @@ function output_page() {
 	$_content = ob_get_clean();
 
 	// is there a header/footer file prefix?
-	$_prefix = $_category ? $_category . '-' . '';
+	$_prefix = $_category ? $_category . '-' : '';
 
 	// so, include the header, output the content,
 	// and then output the footer
