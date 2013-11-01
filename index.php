@@ -1,7 +1,7 @@
 <?php
 
 // get the requested page, disallowing pages that begin with _
-$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', $_SERVER['REQUEST_URI']);
+$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']));
 
 // no request? home page it is
 if (!$page)
