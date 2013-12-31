@@ -26,11 +26,13 @@ MicroSite is meant to be a quick starting point for building static websites fro
 
 <ul>
   <li><strong>index.php</strong> - this file is responsible for including your header and footer on each or serving up a 404 page if no page is found</li>
+  <li><strong>protect.php</strong> <em>(optional)</em> - this file is used to password protect your site. Rename <em>password.sample.php</em> to <em>password.php</em> and set a new password.
   <li><strong>pages/</strong> - this folder contains all of your pages. You can create folders to stay organized.
     <ul>
       <li><strong>_header.php</strong> - this will be your websites header file</li>
       <li><strong>_footer.php</strong> - this is your websites footer file</li>
       <li><strong>_404.php</strong> - this is your websites 404 page</li>
+      <li><strong>_password.php</strong> - this is the page displayed when your site is password protected</li>
       <li><strong>home.php</strong> - this is your home page, from which you can base all of your other pages</li>
     </ul>
 </ul>

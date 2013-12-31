@@ -1,15 +1,57 @@
 <?php
 
-// get the requested page, disallowing pages that begin with _
-$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']));
+// is there a password file?
+if (file_exists(__DIR__ . '/protect.php')) {
+	// load the password file
+	include(__DIR__ . '/protect.php');
 
-// no request? home page it is
-if (!$page)
-  $page = 'home';
+	// if there's a password
+	if (isset($password)) {
+		// start a session
+		session_name('MicroSite');
+		session_start();
 
-// page doesn't exist? uh oh. 404!
-if (!file_exists('pages/' . $page . '.php'))
-  $page = '_404';
+		// if we're not logged in
+		if (!isset($_SESSION['authenticated'])) {
+			// if our password has been entered
+			if (isset($_POST['password'])) {
+				// if it's correct
+				if ($_POST['password'] == $password) {
+					// save to the session
+					$_SESSION['authenticated'] = true;
+
+					// do a GET redirect back to the same page
+					exit(header('Location: ' . $_SERVER['REQUEST_URI']));
+				}
+
+				// otherwise, wrong password
+				else {
+					$wrong_password = true;
+				}
+			}
+
+			// if we're still not authenticated
+			if (!isset($_SESSION['authenticated'])) {
+				// change the page to password
+				$page = '_password';
+			}
+		}
+	}
+}
+
+// if the page is not set
+if (!isset($page)) {
+	// get the requested page, disallowing pages that begin with _
+	$page = preg_replace('/(^\/*_*)|((\/)_+)|(\/+$)/', '$2', preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']));
+
+	// no request? home page it is
+	if (!$page)
+	  $page = 'home';
+
+	// page doesn't exist? uh oh. 404!
+	if (!file_exists('pages/' . $page . '.php'))
+	  $page = '_404';
+}
 
 // what includes should we have for this page?
 determine_page_includes();
@@ -19,7 +61,7 @@ output_page();
 
 // output page
 function output_page() {
-	global $page;
+	global $page, $wrong_password;
 
 	// start output buffering
 	ob_start();
