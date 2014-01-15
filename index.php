@@ -61,7 +61,11 @@ output_page();
 
 // output page
 function output_page() {
-	global $page, $wrong_password;
+	global $page, $wrong_password, $import;
+
+	// import variables?
+	if (isset($import) && is_array($import))
+		extract($import);
 
 	// start output buffering
 	ob_start();
@@ -76,7 +80,7 @@ function output_page() {
 	$_content = ob_get_clean();
 
 	// is there a header/footer file prefix?
-	$_prefix = $_category ? $_category . '-' : '';
+	$_prefix = isset($_category) ? $_category . '-' : '';
 
 	// so, include the header, output the content,
 	// and then output the footer
