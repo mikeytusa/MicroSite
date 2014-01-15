@@ -3,9 +3,15 @@
 	<input type="submit" value="Search">
 </form>
 
+<ul class="categories">
+	<? foreach ($categories as $category): ?>
+		<li><a href="/blog/<?= $category ?>"><?= ucwords(str_replace('-', ' ', $category)) ?></a></li>
+	<? endforeach; ?>
+</ul>
+
 <?php foreach ($posts as $post): ?>
 	<div class="post">
-		<h2><a href="<?= $post['permalink'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
+		<h2><a href="/blog/<?= $post['permalink'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
 		<div class="excerpt"><?= htmlspecialchars($post['excerpt']) ?></div>
 		<div class="date"><?= $post['date'] ?></div>
 	</div>

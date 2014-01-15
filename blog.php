@@ -5,26 +5,27 @@ $blog->route();
 
 class MicroBlog {
 	public function route() {
-		if ($post = preg_replace('/^\/blog\/|\?.*$/', '', $_SERVER['REQUEST_URI']))
-			$this->showPost($post);
-		elseif ($_GET['cache'] == 'rebuild')
+		if ($_GET['cache'] == 'rebuild')
 			$this->rebuildCache(true);
-		elseif ($_GET['ajax'])
+		elseif ($post = rtrim(preg_replace('/^\/blog\/|\?.*$/', '', $_SERVER['REQUEST_URI']), '/'))
+			$this->showPost($post);
+		elseif (isset($_GET['ajax']))
 			$this->getPosts();
 		else
 			$this->listPosts();
 	}
 
-	public function listPosts() {
+	public function listPosts($cat = false) {
 		global $page, $import;
 		$page = 'blog/posts-list';
 		$import = [
-			'posts' => $this->getPosts(false)
+			'posts' => $this->getPosts(false, $cat),
+			'categories' => $this->getCategories()
 		];
 		require('index.php');
 	}
 
-	public function getPosts($output = true) {
+	public function getPosts($output = true, $cat = false) {
 		if (!file_exists('.blog-cache.json'))
 			$this->rebuildCache();
 		if (!file_exists('.blog-cache.json'))
@@ -49,6 +50,14 @@ class MicroBlog {
 			}
 			$posts = $result;
 		}
+		elseif ($cat) {
+			$result = [];
+			foreach ($posts as $post)
+				if (array_key_exists('category', $post))
+					if ($post['category'] == $cat)
+						$result[] = $post;
+			$posts = $result;
+		}
 		$posts = array_slice($posts, $offset, $limit);
 		if ($output) {
 			header('Content-Type: application/json');
@@ -61,28 +70,65 @@ class MicroBlog {
 	public function showPost($post) {
 		global $page, $import;
 		if (!file_exists('pages/blog/posts/' . $post . '.php')) {
-			$page = '_404';
-			require('index.php');
+			if (file_exists('pages/blog/posts/' . $post)) {
+				if (isset($_GET['ajax']))
+					$this->getPosts(true, $post);
+				else
+					$this->listPosts($post);
+			} else {
+				$page = '_404';
+				require('index.php');
+			}
 			return;
 		}
 		ob_start();
 		include('pages/blog/posts/' . $post . '.php');
 		$content = ob_get_clean();
 		$page = 'blog/post';
+		$categories = $this->getCategories();
 		$import = get_defined_vars();
 		require('index.php');
 	}
 
 	public function rebuildCache($feedback = false) {
 		$cache = [];
+		$this->scanDirectoryForCache($cache);
+		usort($cache, function($a, $b) {
+			if ($a['date'] == $b['date'])
+				return 0;
+			return $a['date'] < $b['date'] ? 1 : -1;
+		});
+		foreach ($cache as &$entry)
+			$entry['date'] = date('F j, Y g:i a', $entry['date']);
+		file_put_contents('.blog-cache.json', json_encode($cache));
+		$feedback && print('OK');
+	}
+
+	private function getCategories() {
+		$cats = [];
 		$dh = opendir($base = 'pages/blog/posts');
 		while ($file = readdir($dh)) {
-			if (is_dir($path = $base . '/' . $file))
+			if ($file == '.' || $file == '..')
 				continue;
+			if (is_dir($base . '/' . $file))
+				$cats[] = $file;
+		}
+		return $cats;
+	}
+
+	private function scanDirectoryForCache(&$cache, $dir = '') {
+		$dh = opendir($base = 'pages/blog/posts/' . $dir);
+		while ($file = readdir($dh)) {
+			if ($file == '.' || $file == '..')
+				continue;
+			if (is_dir($base . '/' . $file)) {
+				$this->scanDirectoryForCache($cache, $dir . $file . '/');
+				continue;
+			}
 			$prevars = true;
 			$prevars = get_defined_vars();
 			ob_start();
-			include($path);
+			include($base . '/' . $file);
 			$postvars = get_defined_vars();
 			$content = ob_get_clean();
 			$vars = [];
@@ -95,22 +141,14 @@ class MicroBlog {
 				$vars['excerpt'] = $this->stripContent($content);
 	            strlen($vars['excerpt']) > 150 && ($vars['excerpt'] = substr($vars['excerpt'], 0, 150) . '...');
 	        }
-            $vars['permalink'] = preg_replace('/\.php$/', '', $file);
+	        $dir && ($vars['category'] = trim($dir, '/'));
+            $vars['permalink'] = preg_replace('/\.php$/', '', $dir . $file);
             if (!array_key_exists('date', $vars))
             	continue;
             if (!($vars['date'] = strtotime($vars['date'])))
             	continue;
             $cache[] = $vars;
 		}
-		usort($cache, function($a, $b) {
-			if ($a['date'] == $b['date'])
-				return 0;
-			return $a['date'] < $b['date'] ? 1 : -1;
-		});
-		foreach ($cache as &$entry)
-			$entry['date'] = date('F j, Y g:i a', $entry['date']);
-		file_put_contents('.blog-cache.json', json_encode($cache));
-		$feedback && print('OK');
 	}
 
 	private function stripContent($content) {
