@@ -73,6 +73,10 @@ The includes system is simple, but powerful. There are two ways you can include 
 
 There isn't anything you need to do to get the sitemap generator working.  It should work out of the box.  The sitemap.php file is what you'll give to Google Webmaster Tools and any other places you submit your sitemaps.  It will exclude all files you specify in your robots.txt file from the generated sitemap so make sure to keep your robots.txt file updated with any files or folders you do not want to be indexed.  It will also exclude any PHP file whose name begins with an underscore. Thus, your header, footer, and 404 pages are automatically excluded.
 
+<h4>Blog</h4>
+
+The blog allows you to create blog entries with an automatic index, search, categories, and a standardized post template. Simply create pages in the <strong>pages/blog</strong> folder, just as you do any other page. Every time you create or change a page, you should rebuild the cache by visiting <strong>/blog/?cache=rebuild</strong>. The variables included in each post will be included in the cache, and you may use these variables on your posts list and post template pages.
+
 <h4>Thanks!</h4>
 
 Special thanks to Sean Ferguson from Signal24 for helping out with the concept and writing the PHP.
