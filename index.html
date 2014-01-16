@@ -3,48 +3,57 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <title>Microsite by mikeytusa</title>
+    <title>MicroSite by mikeytusa</title>
   </head>
 
   <body>
-    <header>
+    <div id="container">
       <div class="inner">
-        <h1>Microsite</h1>
-        <h2>A tiny static website framework.</h2>
-        <a href="https://github.com/mikeytusa/MicroSite" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h2>MicroSite : A tiny, static website framework for your tiny, static websites.</h2>
+        <header>
+          <h1>MicroSite</h1>
+          <h2>A tiny static website framework.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/mikeytusa/MicroSite/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/mikeytusa/MicroSite/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/mikeytusa/MicroSite" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h2>
+<a name="microsite--a-tiny-static-website-framework-for-your-tiny-static-websites" class="anchor" href="#microsite--a-tiny-static-website-framework-for-your-tiny-static-websites"><span class="octicon octicon-link"></span></a>MicroSite : A tiny, static website framework for your tiny, static websites.</h2>
 
 <p>MicroSite is a very small framework for building static websites.  It does not depend on any particular UI or backend framework and doesn't require a database.</p>
 
-<h4>What does it require?</h4>
+<h4>
+<a name="what-does-it-require" class="anchor" href="#what-does-it-require"><span class="octicon octicon-link"></span></a>What does it require?</h4>
 
 <ul>
 <li>PHP</li>
   <li>Apache Web Server</li>
 </ul><p>MicroSite is meant to be a quick starting point for building static websites from scratch.  You can use whatever frontend frameworks you want. Just add in their required dependancies as well as any JavaScript frameworks you'd like to work with.</p>
 
-<h4>Required Files:</h4>
+<h4>
+<a name="required-files" class="anchor" href="#required-files"><span class="octicon octicon-link"></span></a>Required Files:</h4>
 
 <ul>
 <li>
 <strong>index.php</strong> - this file is responsible for including your header and footer on each or serving up a 404 page if no page is found</li>
   <li>
+<strong>protect.php</strong> <em>(optional)</em> - this file is used to password protect your site. Rename <em>password.sample.php</em> to <em>password.php</em> and set a new password.
+  </li>
+<li>
 <strong>pages/</strong> - this folder contains all of your pages. You can create folders to stay organized.
     <ul>
 <li>
@@ -54,10 +63,13 @@
       <li>
 <strong>_404.php</strong> - this is your websites 404 page</li>
       <li>
+<strong>_password.php</strong> - this is the page displayed when your site is password protected</li>
+      <li>
 <strong>home.php</strong> - this is your home page, from which you can base all of your other pages</li>
     </ul>
 </li>
-</ul><h4>File Descriptions:</h4>
+</ul><h4>
+<a name="file-descriptions" class="anchor" href="#file-descriptions"><span class="octicon octicon-link"></span></a>File Descriptions:</h4>
 
 <ul>
 <li>
@@ -81,47 +93,47 @@
 <strong>assets/js/</strong> - this is where you'll put page specific JavaScript.  See below for more details.</li>
   <li>
 <strong>assets/img/</strong> - this is where you'll put all of your image files</li>
-</ul><h4>Includes</h4>
+</ul><h4>
+<a name="includes" class="anchor" href="#includes"><span class="octicon octicon-link"></span></a>Includes</h4>
 
 <p>The includes system is simple, but powerful. There are two ways you can include JavaScript and CSS files:</p>
 
 <ul>
 <li>
-    <h5>Automatic per-page includes</h5>
+    <h5>
+<a name="automatic-per-page-includes" class="anchor" href="#automatic-per-page-includes"><span class="octicon octicon-link"></span></a>Automatic per-page includes</h5>
     <p>If you have a page with the filename <strong>about.php</strong>, you can create an <strong>about.js</strong> file in <strong>assets/js</strong> and/or an <strong>about.css</strong> file in <strong>assets/css</strong> and they will be automatically loaded.</p>
     <p>Alternatively, you can create a folder by the name of the page (in this example, <strong>about</strong>) in the appropriate assets directory and all of the files within that folder will be loaded.</p>
     <p>By default, CSS files are loaded in the header and JavaScript files in the footer. You can change this behavior by appending <strong>-head</strong> or <strong>-foot</strong> to any filename (before the extension, of course) and it will be loaded in the correct place.</p>
   </li>
   <li>
-    <h5>includes.txt file</h5>
+    <h5>
+<a name="includestxt-file" class="anchor" href="#includestxt-file"><span class="octicon octicon-link"></span></a>includes.txt file</h5>
     <p>The includes.txt file can be used to simplify the loading of additional libraries on specific pages, such as a form validation script on just pages using forms. The includes-examples.txt details all the possible scenarios this configuration file supports.</p>
   </li>
-</ul><h4>Sitemap Generator</h4>
+</ul><h4>
+<a name="sitemap-generator" class="anchor" href="#sitemap-generator"><span class="octicon octicon-link"></span></a>Sitemap Generator</h4>
 
 <p>There isn't anything you need to do to get the sitemap generator working.  It should work out of the box.  The sitemap.php file is what you'll give to Google Webmaster Tools and any other places you submit your sitemaps.  It will exclude all files you specify in your robots.txt file from the generated sitemap so make sure to keep your robots.txt file updated with any files or folders you do not want to be indexed.  It will also exclude any PHP file whose name begins with an underscore. Thus, your header, footer, and 404 pages are automatically excluded.</p>
 
-<h4>Thanks!</h4>
+<h4>
+<a name="blog" class="anchor" href="#blog"><span class="octicon octicon-link"></span></a>Blog</h4>
+
+<p>The blog allows you to create blog entries with an automatic index, search, categories, and a standardized post template. Simply create pages in the <strong>pages/blog</strong> folder, just as you do any other page. Every time you create or change a page, you should rebuild the cache by visiting <strong>/blog/?cache=rebuild</strong>. The variables included in each post will be included in the cache, and you may use these variables on your posts list and post template pages.</p>
+
+<h4>
+<a name="thanks" class="anchor" href="#thanks"><span class="octicon octicon-link"></span></a>Thanks!</h4>
 
 <p>Special thanks to Sean Ferguson from Signal24 for helping out with the concept and writing the PHP.</p>
         </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/mikeytusa/MicroSite/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/mikeytusa/MicroSite/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+        <footer>
+          MicroSite is maintained by <a href="https://github.com/mikeytusa">mikeytusa</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
 
-          <p class="repo-owner"><a href="https://github.com/mikeytusa/MicroSite"></a> is maintained by <a href="https://github.com/mikeytusa">mikeytusa</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
+        
       </div>
     </div>
-
-  
   </body>
 </html>
