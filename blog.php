@@ -122,14 +122,14 @@ class MicroBlog {
 		while ($file = readdir($dh)) {
 			if ($file == '.' || $file == '..')
 				continue;
-			if (is_dir($base . '/' . $file)) {
+			if (is_dir($base . $file)) {
 				$this->scanDirectoryForCache($cache, $dir . $file . '/');
 				continue;
 			}
 			$prevars = true;
 			$prevars = get_defined_vars();
 			ob_start();
-			include($base . '/' . $file);
+			include($base . $file);
 			$postvars = get_defined_vars();
 			$content = ob_get_clean();
 			$vars = [];
