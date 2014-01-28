@@ -7,7 +7,7 @@ class MicroBlog {
 	public function route() {
 		if ($_GET['cache'] == 'rebuild')
 			$this->rebuildCache(true);
-		elseif ($post = rtrim(preg_replace('/^\/blog\/|\?.*$/', '', $_SERVER['REQUEST_URI']), '/'))
+		elseif ($post = rtrim(preg_replace('/^\/blog\/?|\?.*$/', '', $_SERVER['REQUEST_URI']), '/'))
 			$this->showPost($post);
 		elseif (isset($_GET['ajax']))
 			$this->getPosts();
