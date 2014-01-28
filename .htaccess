@@ -2,6 +2,7 @@
 RewriteEngine On
 RewriteBase /
 RewriteRule ^blog/ blog.php [L]
+RewriteRule ^blog$ blog.php [L]
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
