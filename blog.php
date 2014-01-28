@@ -19,6 +19,7 @@ class MicroBlog {
 		global $page, $import;
 		$page = 'blog/posts-list';
 		$import = [
+			'cat' => $cat,
 			'posts' => $this->getPosts(false, $cat),
 			'categories' => $this->getCategories()
 		];
