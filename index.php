@@ -1,5 +1,10 @@
 <?php
 
+// blog URL handling for when .htaccess doesn't work
+global $blog;
+if (preg_match('/^\/blog/', $_SERVER['REQUEST_URI']) && !isset($blog))
+	exit(require('blog.php'));
+
 // is there a password file?
 if (file_exists(__DIR__ . '/protect.php')) {
 	// load the password file
