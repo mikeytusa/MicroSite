@@ -99,9 +99,9 @@ function output_header_includes($indent = '') {
 	global $includes;
 	$append = array();
 	foreach ($includes['head']['css'] as $file)
-		$append[] = '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
+		$append[] = '<link rel="stylesheet" type="text/css" href="' . get_absolute_path($file, '/assets/css/') . '">';
 	foreach ($includes['head']['js'] as $file)
-		$append[] = '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';
+		$append[] = '<script type="text/javascript" src="' . get_absolute_path($file, '/assets/js/') . '"></script>';
 	echo implode("\n" . $indent, $append);
 }
 
@@ -284,12 +284,23 @@ function add_includes_for($key) {
 			// CSS?
 			if (substr($include, -4) == '.css')
 				$includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = $include;
+			elseif (substr($include, 0, 4) == 'css:')
+				$includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = substr($include, 4);
 
 			// JS?
 			elseif (substr($include, -3) == '.js')
 				$includes[$placement == 'head' ? 'head' : 'foot']['js'][] = $include;
+			elseif (substr($include, 0, 3) == 'js:')
+				$includes[$placement == 'head' ? 'head' : 'foot']['js'][] = substr($include, 3);
 		}
 	}
+}
+
+function get_absolute_path($path, $folder) {
+	if (substr($path, 0, 1) == '/' || substr($path, 0, 7) == 'http://' || substr($path, 0, 8) == 'https://')
+		return $path;
+	else
+		return $folder . $path;
 }
 
 /* End! */
