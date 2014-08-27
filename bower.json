@@ -1,0 +1,27 @@
+{
+	"name": "MicroSite",
+	"description": "A tiny, static file HTML5 boilerplate that uses PHP for simple routing of JS/CSS.  Nice features like a sitemap generator are built in as well as dependencies for jQuery and Twitter Bootstrap through Bower.  Lots of other features are included but not required.",
+	"version": "1.0.0",
+	"license": "",
+	"keywords": [
+		"html5",
+		"boilerplate",
+		"framework",
+		"website",
+		"responsive",
+		"front-end",
+		"php",
+		"starter",
+		"quick-start"
+	],
+	"homepage": "https://github.com/mikeytusa/MicroSite",
+	"license": {
+		"type": "MIT",
+		"url": "https://github.com/mikeytusa/MicroSite/blob/master/license.md"
+	},
+	"dependencies": {
+		"jquery": "latest",
+		"bootstrap": "latest"
+	}
+
+}

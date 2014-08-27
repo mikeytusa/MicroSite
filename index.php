@@ -1,5 +1,10 @@
 <?php
 
+// blog URL handling for when .htaccess doesn't work
+global $blog;
+if (preg_match('/^\/blog/', $_SERVER['REQUEST_URI']) && !isset($blog))
+	return require('blog.php');
+
 // if we're requesting a CSS file, try processing that
 if (substr($_SERVER['REQUEST_URI'], -4) == '.css')
 	return generate_css_file();
