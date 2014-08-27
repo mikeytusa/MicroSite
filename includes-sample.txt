@@ -69,7 +69,6 @@ some-unusual-page-that-requires-js-in-the-header:
 # you can load certain libraries only in your development environment.
 # Just prefix the domain with a asterisk (*), and then treat the rest
 # like you do your page-specific includes:
-
 *localhost:
 	//cdnjs.cloudflare.com/ajax/libs/less.js/1.7.4/less.min.js
 
