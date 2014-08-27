@@ -1,5 +1,9 @@
 <?php
 
+// if we're requesting a CSS file, try processing that
+if (substr($_SERVER['REQUEST_URI'], -4) == '.css')
+	return generate_css_file();
+
 // is there a password file?
 if (file_exists(__DIR__ . '/protect.php')) {
 	// load the password file
@@ -21,7 +25,7 @@ if (file_exists(__DIR__ . '/protect.php')) {
 					$_SESSION['authenticated'] = true;
 
 					// do a GET redirect back to the same page
-					exit(header('Location: ' . $_SERVER['REQUEST_URI']));
+					return header('Location: ' . $_SERVER['REQUEST_URI']);
 				}
 
 				// otherwise, wrong password
@@ -46,11 +50,11 @@ if (!isset($page)) {
 
 	// no request? home page it is
 	if (!$page)
-	  $page = 'home';
+		$page = 'home';
 
 	// page doesn't exist? uh oh. 404!
 	if (!file_exists('pages/' . $page . '.php'))
-	  $page = '_404';
+		$page = '_404';
 }
 
 // what includes should we have for this page?
@@ -203,32 +207,44 @@ function determine_page_includes() {
 	}
 
 	// how about page-specific CSS files?
-	if (file_exists('assets/css/' . ($file = $page . '.css')))
-		$includes['head']['css'][] = $file;
-	if (file_exists('assets/css/' . ($file = $page . '-head.css')))
-		$includes['head']['css'][] = $file;
-	if (file_exists('assets/css/' . ($file = $page . '-foot.css')))
-		$includes['foot']['css'][] = $file;
-
-	// JS files?
-	if (file_exists('assets/js/' . ($file = $page . '.js')))
-		$includes['foot']['js'][] = $file;
-	if (file_exists('assets/js/' . ($file = $page . '-foot.js')))
-		$includes['foot']['js'][] = $file;
-	if (file_exists('assets/js/' . ($file = $page . '-head.js')))
-		$includes['head']['js'][] = $file;
+	process_asset($page, 'css', 'head');
+	process_asset($page . '-head', 'css', 'head');
+	process_asset($page . '-foot', 'css', 'foot');
+	process_asset($page, 'js', 'foot');
+	process_asset($page . '-foot', 'js', 'foot');
+	process_asset($page . '-head', 'js', 'head');
 
 	// a folder full of CSS?
 	if (file_exists($dir = 'assets/css/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
-			if (substr($file, -4) == '.css')
-				$includes[preg_match('/-foot\./', $file) ? 'foot' : 'head']['css'][] = $page . '/' . $file;
+			if (substr($file, -4) == '.css' || substr($file, -5) == '.less')
+				process_asset($page . '/' . $file, 'css', preg_match('/-foot\./', $file) ? 'foot' : 'head');
 
 	// a folder full of JS?
 	if (file_exists($dir = 'assets/js/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
 			if (substr($file, -3) == '.js')
-				$includes[preg_match('/-head\./', $file) ? 'head' : 'foot']['js'][] = $page . '/' . $file;
+				process_asset($page . '/' . $file, 'js', preg_match('/-head\./', $file) ? 'head' : 'foot');
+}
+
+function process_asset($file, $type, $section) {
+	global $includes;
+
+	// do we have a minified version?
+	if (file_exists('assets/' . $type . '/' . $file . '.min.' . $type))
+		$file = $file . '.min.' . $type;
+
+	// otherwise, if the file doesn't exist in the assets folder
+	elseif (!file_exists('assets/' . $type . '/' . $file . '.' . $type))
+		// if it's not CSS, or we don't have a LESS copy hanging around, bail
+		if ($type != 'css' || !file_exists('assets/' . $type . '/' . $file . '.less'))
+			return;
+
+	// append the extension
+	$file .= '.' . $type;
+
+	// add file
+	$includes[$section][$type][] = $file;
 }
 
 function add_includes_for($key) {
@@ -296,6 +312,20 @@ function get_absolute_path($path, $folder) {
 		return $path;
 	else
 		return $folder . $path;
+}
+
+function generate_css_file() {
+	if (!file_exists($file = preg_replace('/\.css$/', '.less', preg_replace('/^\//', '', $_SERVER['REQUEST_URI']))))
+		return header('HTTP/1.1 404 File Not Found');
+	if (file_exists('vendor/leafo/lessphp/lessc.inc.php'))
+		require_once('vendor/leafo/lessphp/lessc.inc.php');
+	elseif (file_exists('assets/lib/lessphp/lessc.inc.php'))
+		require_once('assets/lib/lessphp/lessc.inc.php');
+	else
+		return header('HTTP/1.1 503 LESS Compiler Unavailable');
+	header('Content-Type: text/css');
+	$less = new lessc;
+	echo $less->compileFile($file);
 }
 
 /* End! */
