@@ -27,6 +27,12 @@ take-a-tour/:
 	tour.css
 
 
+# Or, load for every page by specifying it outside of a page group:
+common.css
+
+# Just remember to put a blank line before the next page definition.
+
+
 # By default, JS files will be loaded from /assets/js
 # and CSS from /assets/css, but if you prefix your
 # path with a slash, MicroSite will look from the root
@@ -57,6 +63,24 @@ some-unusual-page-that-requires-js-in-the-header:
 	some-js-file-that-will-load-in-the-footer.js
 	some-css-file-that-will-load-in-the-header.css
 	> some-css-file-that-will-load-in-the-footer.css
+
+
+# You can also load global files for specific domains. So, for example,
+# you can load certain libraries only in your development environment.
+# Just prefix the domain with a asterisk (*), and then treat the rest
+# like you do your page-specific includes:
+
+*localhost:
+	//cdnjs.cloudflare.com/ajax/libs/less.js/1.7.4/less.min.js
+
+
+# If you specify a CSS file and it cannot be found, MicroSite will
+# check for the existence of a LESS file in its place. If one is found,
+# it will be added to the output. Just make sure you load a LESS compiler
+# to your includes!
+
+# The same rule will apply to files that are automatically included by
+# matching the page name.
 
 
 # The end!
