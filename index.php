@@ -5,10 +5,6 @@ global $blog;
 if (preg_match('/^\/blog/', $_SERVER['REQUEST_URI']) && !isset($blog))
 	return require('blog.php');
 
-// if we're requesting a CSS file, try processing that
-if (substr($_SERVER['REQUEST_URI'], -4) == '.css')
-	return generate_css_file();
-
 // is there a password file?
 if (file_exists(__DIR__ . '/protect.php')) {
 	// load the password file
@@ -103,7 +99,7 @@ function output_header_includes($indent = '') {
 	global $includes;
 	$append = array();
 	foreach ($includes['head']['css'] as $file)
-		$append[] = '<link rel="stylesheet" type="text/css" href="' . get_absolute_path($file, '/assets/css/') . '">';
+		$append[] = '<link rel="' . (substr($file, -5) == '.less' ? 'stylesheet/less' : 'stylesheet') . '" type="text/css" href="' . get_absolute_path($file, '/assets/css/') . '">';
 	foreach ($includes['head']['js'] as $file)
 		$append[] = '<script type="text/javascript" src="' . get_absolute_path($file, '/assets/js/') . '"></script>';
 	echo implode("\n" . $indent, $append);
@@ -114,7 +110,7 @@ function output_footer_includes($indent = '') {
 	global $includes;
 	$append = array();
 	foreach ($includes['foot']['css'] as $file)
-		$append[] = '<link rel="stylesheet" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
+		$append[] = '<link rel="' . (substr($file, -5) == '.less' ? 'stylesheet/less' : 'stylesheet') . '" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
 	foreach ($includes['foot']['js'] as $file)
 		$append[] = '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';
 	echo implode("\n" . $indent, $append);
@@ -138,8 +134,8 @@ function determine_page_includes() {
 
 	// if we have an includes definition file
 	if (file_exists('includes.txt')) {
-		// array to keep track of definitions
-		$def = array();
+		// array to keep track of definitions, with a global entry
+		$def = array(array( 'appliesTo' => array(''), 'includes' => array() ));
 
 		// some stuff to help us parse
 		$nextLineIsBlockDef = true;
@@ -166,6 +162,12 @@ function determine_page_includes() {
 
 			// is this line part of a block definition?
 			if ($nextLineIsBlockDef) {
+				// if this line does not end with a common or colon, it must be a global
+				if (substr($line, -1) != ':' && substr($line, -1) != ',') {
+					$def[0]['includes'][] = $line;
+					continue;
+				}
+
 				// if this line ends with a colon, the next line won't be a block definition
 				if (substr($line, -1) == ':') {
 					$nextLineIsBlockDef = false;
@@ -197,6 +199,9 @@ function determine_page_includes() {
 			$def[$blockIndex]['includes'][] = $line;
 		}
 
+		// add global includes
+		add_includes_for('');
+
 		// if this page is in a subfolder
 		if (strpos($page, '/')) {
 			// break this page into folders
@@ -209,6 +214,9 @@ function determine_page_includes() {
 
 		// add includes for the page
 		add_includes_for($page);
+
+		// add includes for this hostname
+		add_includes_for('*' . $_SERVER['HTTP_HOST']);
 	}
 
 	// how about page-specific CSS files?
@@ -241,12 +249,17 @@ function process_asset($file, $type, $section) {
 
 	// otherwise, if the file doesn't exist in the assets folder
 	elseif (!file_exists('assets/' . $type . '/' . $file . '.' . $type))
-		// if it's not CSS, or we don't have a LESS copy hanging around, bail
-		if ($type != 'css' || !file_exists('assets/' . $type . '/' . $file . '.less'))
+		// if it's CSS and we have a LESS copy hanging around, use it
+		if ($type == 'css' && file_exists('assets/' . $type . '/' . $file . '.less'))
+			$file = $file . '.less';
+
+		// otherwise, bail
+		else
 			return;
 
-	// append the extension
-	$file .= '.' . $type;
+	// otherwise, append the extension
+	else
+		$file .= '.' . $type;
 
 	// add file
 	$includes[$section][$type][] = $file;
@@ -317,20 +330,6 @@ function get_absolute_path($path, $folder) {
 		return $path;
 	else
 		return $folder . $path;
-}
-
-function generate_css_file() {
-	if (!file_exists($file = preg_replace('/\.css$/', '.less', preg_replace('/^\//', '', $_SERVER['REQUEST_URI']))))
-		return header('HTTP/1.1 404 File Not Found');
-	if (file_exists('vendor/leafo/lessphp/lessc.inc.php'))
-		require_once('vendor/leafo/lessphp/lessc.inc.php');
-	elseif (file_exists('assets/lib/lessphp/lessc.inc.php'))
-		require_once('assets/lib/lessphp/lessc.inc.php');
-	else
-		return header('HTTP/1.1 503 LESS Compiler Unavailable');
-	header('Content-Type: text/css');
-	$less = new lessc;
-	echo $less->compileFile($file);
 }
 
 /* End! */
