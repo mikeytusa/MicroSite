@@ -23,29 +23,17 @@ module.exports = function(grunt) {
       jquery: {
         files: [{
           cwd: '<%= paths.source %>/assets/lib/jquery/dist/',
-          src: ['jquery.min.js'],
-          expand: true,
-          dest: '<%= paths.destination %>/assets/lib/jquery'
-        },
-        {
-          cwd: '<%= paths.source %>/assets/lib/jquery/dist/',
-          src: ['jquery.min.map'],
+          src: ['jquery.min.js', 'jquery.min.map'],
           expand: true,
           dest: '<%= paths.destination %>/assets/lib/jquery'
         }]
       },
       bootstrap: {
         files: [{
-          cwd: '<%= paths.source %>/assets/lib/bootstrap/dist/js',
-          src: ['bootstrap.min.js'],
+          cwd: '<%= paths.source %>/assets/lib/bootstrap/dist',
+          src: ['js/bootstrap.min.js', 'fonts/**'],
           expand: true,
-          dest: '<%= paths.destination %>/assets/lib/bootstrap/js'
-        },
-        {
-          cwd: '<%= paths.source %>/assets/lib/bootstrap/dist/fonts',
-          src: ['**'],
-          expand: true,
-          dest: '<%= paths.destination %>/assets/lib/bootstrap/fonts'
+          dest: '<%= paths.destination %>/assets/lib/bootstrap'
         }]
       }
     },
