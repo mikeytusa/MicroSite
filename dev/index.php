@@ -230,18 +230,26 @@ function determine_page_includes() {
 	// a folder full of CSS?
 	if (file_exists($dir = 'assets/css/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
-			if (substr($file, -4) == '.css' || substr($file, -5) == '.less')
-				process_asset($page . '/' . $file, 'css', preg_match('/-foot\./', $file) ? 'foot' : 'head');
+			if (substr($file, -4) == '.css')
+				process_asset($page . '/' . substr($file, 0, -4), 'css', preg_match('/-foot\./', $file) ? 'foot' : 'head');
+			elseif (substr($file, -5) == '.less')
+				process_asset($page . '/' . substr($file, 0, -5), 'css', preg_match('/-foot\./', $file) ? 'foot' : 'head');
 
 	// a folder full of JS?
 	if (file_exists($dir = 'assets/js/' . $page) && is_dir($dir))
 		foreach (scandir($dir) as $file)
 			if (substr($file, -3) == '.js')
-				process_asset($page . '/' . $file, 'js', preg_match('/-head\./', $file) ? 'head' : 'foot');
+				process_asset($page . '/' . substr($file, 0, -3), 'js', preg_match('/-head\./', $file) ? 'head' : 'foot');
 }
 
 function process_asset($file, $type, $section) {
 	global $includes;
+
+	// external?
+	if (substr($file, 0, 1) == '/' || substr($file, 0, 7) == 'http://' || substr($file, 0, 8) == 'https://') {
+		$includes[$section][$type][] = $file . '.' . $type;
+		return;
+	}
 
 	// do we have a minified version?
 	if (file_exists('assets/' . $type . '/' . $file . '.min.' . $type))
@@ -312,13 +320,13 @@ function add_includes_for($key) {
 
 			// CSS?
 			if (substr($include, -4) == '.css')
-				$includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = $include;
+				process_asset(substr($include, 0, -4), 'css', $placement == 'foot' ? 'foot' : 'head');
 			elseif (substr($include, 0, 4) == 'css:')
 				$includes[$placement == 'foot' ? 'foot' : 'head']['css'][] = substr($include, 4);
 
 			// JS?
 			elseif (substr($include, -3) == '.js')
-				$includes[$placement == 'head' ? 'head' : 'foot']['js'][] = $include;
+				process_asset(substr($include, 0, -3), 'js', $placement == 'head' ? 'head' : 'foot');
 			elseif (substr($include, 0, 3) == 'js:')
 				$includes[$placement == 'head' ? 'head' : 'foot']['js'][] = substr($include, 3);
 		}
