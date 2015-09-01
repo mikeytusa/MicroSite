@@ -1,5 +1,8 @@
 <?php
 
+// if using a cdn, define the base url here, otherwise leave blank
+$cdnurl = '';
+
 // blog URL handling for when .htaccess doesn't work
 global $blog;
 if (preg_match('/^\/blog/', $_SERVER['REQUEST_URI']) && !isset($blog))
@@ -140,7 +143,7 @@ function determine_page_includes() {
 		// some stuff to help us parse
 		$nextLineIsBlockDef = true;
 		$blockAppliesTo = array();
-		
+
 		// who knows what line endings its using, so hopefully PHP can figure it out
 		ini_set('auto_detect_line_endings', true);
 
