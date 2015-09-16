@@ -3,6 +3,10 @@
 // if using a cdn, define the base url here, otherwise leave blank
 $cdnurl = '';
 
+// if it's in dev, then jk we're not going to use a CDN
+if (preg_match('/\.dev$/', $_SERVER['HTTP_HOST']))
+	$cdnurl = '';
+
 // blog URL handling for when .htaccess doesn't work
 global $blog;
 if (preg_match('/^\/blog/', $_SERVER['REQUEST_URI']) && !isset($blog))
@@ -69,7 +73,7 @@ output_page();
 
 // output page
 function output_page() {
-	global $page, $wrong_password, $import;
+	global $page, $wrong_password, $import, $cdnurl;
 
 	// import variables?
 	if (isset($import) && is_array($import))
@@ -113,9 +117,9 @@ function output_footer_includes($indent = '') {
 	global $includes;
 	$append = array();
 	foreach ($includes['foot']['css'] as $file)
-		$append[] = '<link rel="' . (substr($file, -5) == '.less' ? 'stylesheet/less' : 'stylesheet') . '" type="text/css" href="' . (substr($file, 0, 1) == '/' ? '' : '/assets/css/') . $file . '">';
+		$append[] = '<link rel="' . (substr($file, -5) == '.less' ? 'stylesheet/less' : 'stylesheet') . '" type="text/css" href="' . get_absolute_path($file, '/assets/css/') . '">';
 	foreach ($includes['foot']['js'] as $file)
-		$append[] = '<script type="text/javascript" src="' . (substr($file, 0, 1) == '/' ? '' : '/assets/js/') . $file . '"></script>';
+		$append[] = '<script type="text/javascript" src="' . get_absolute_path($file, '/assets/js/') . '"></script>';
 	echo implode("\n" . $indent, $append);
 }
 
@@ -337,10 +341,13 @@ function add_includes_for($key) {
 }
 
 function get_absolute_path($path, $folder) {
-	if (substr($path, 0, 1) == '/' || substr($path, 0, 7) == 'http://' || substr($path, 0, 8) == 'https://')
+	global $cdnurl;
+	if (substr($path, 0, 7) == 'http://' || substr($path, 0, 8) == 'https://')
 		return $path;
+	elseif (substr($path, 0, 1) == '/')
+		return $cdnurl . $path;
 	else
-		return $folder . $path;
+		return $cdnurl . $folder . $path;
 }
 
 /* End! */
